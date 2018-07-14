@@ -66,7 +66,7 @@ class MabelBot(Client):
                           thread_id, thread_type)
             elif "który potis najlepszy" in message_object.text.lower():
                 self.send(Message(text='Ten za pobraniem'), thread_id, thread_type)
-            elif re.compile('|'.join(linux_names), re.IGNORECASE).search(message_object.text) and message_object.text != "linux to szrot":
+            elif re.compile('|'.join(linux_names), re.IGNORECASE).search(message_object.text) and message_object.text != "linux to szrot" and "gnu" not in message_object.text.lower():
                 self.send(Message (text="I'd just like to interject for a moment. What you’re referring to as Linux, "
                                         "is in fact, GNU/Linux, or as I’ve recently taken to calling it, "
                                         "GNU plus Linux. Linux is not an operating system unto itself, but rather "
@@ -86,8 +86,7 @@ class MabelBot(Client):
                                         "combination with the GNU operating system: the whole system is basically GNU "
                                         "with Linux added, or GNU/Linux. All the so-called “Linux” distributions are"
                                         "really distributions of GNU/Linux"), thread_id, thread_type)
-            elif "linux" in message_object.text.lower():
-                self.send(Message(text='GNU/Linux*'), thread_id, thread_type)
+
         else:
             # Sends the data to the inherited onMessage, so that we can still see when a message is recieved
             super(MabelBot, self).onMessage(author_id=author_id, message_object=message_object,
