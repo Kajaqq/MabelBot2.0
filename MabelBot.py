@@ -2,11 +2,13 @@
 from fbchat import Client
 from fbchat.models import *
 import wikipedia
+import re
 
 # presety
 id_emilki = "100011357566074"
 id_kajaka = ["100002151786860"]
 id_grupki = "943760085727075"
+linux_names = ["gnu/linux" ,"linux"]
 loop = False
 wikipedia.set_lang("pl")
 Potezny_login = ''
@@ -30,9 +32,9 @@ class MabelBot(Client):
         self.markAsDelivered(thread_id, message_object.uid)
         print("%s napisal: %s" % (author_id, message_object.text))  # output log
         if thread_type == ThreadType.GROUP and author_id != self.uid:
-            if message_object.text[0:4] == "/wiki":
-                self.send(Message(text=wikikurwa(message_object.text[5:]), thread_id, thread_type)
-            if message_object.text == "co":
+            if "/wiki" in message_object.text:
+                self.send(Message(text=wikikurwa(message_object.text[6:])), thread_id, thread_type)
+            elif message_object.text == "co":
                 self.send(Message(text='jajco kurwa'), thread_id, thread_type)
             elif message_object.text == "nk":
              self.send(Message(text='co, rąk ni mosz do roboty?'), thread_id, thread_type)
@@ -52,7 +54,7 @@ class MabelBot(Client):
             elif message_object.text == "reload":
                 self.removeUserFromGroup(author_id, id_grupki)
                 self.addUsersToGroup(author_id, id_grupki)
-            elif message_object.text == "linux to szrot":
+            elif message_object.text == "linux to szrot" or message_object.text == "GNU/Linux":
                 self.reactToMessage(message_id=message_object.uid, reaction=MessageReaction.LOVE)
             elif message_object.text == u" ":
                 self.send(Message(text='Gratuluje worka'), thread_id, thread_type)
@@ -61,9 +63,11 @@ class MabelBot(Client):
                                        "\nco\n/wikipedia\njapierdole.png\n/makeamdgreatagain"
                                        "\nARKA GDYNIA\nZAGLEBIE SOSNOWIEC"
                                        "\n/poilebananywlidlu\n/poilebuleczkiwbiedrze"
-                                       "\nlinux to szrot"),
+                                       "\nlinux to szrot\nKtóry POTIS najlepszy?"),
                         thread_id, thread_type)
-            elif message_object.text != "linux to szrot" and "linux" in message_object.text.lower():
+            elif "który potis najlepszy" in message_object.text.lower():
+                self.send(Message(text='Ten za pobraniem'), thread_id, thread_type)
+            elif re.compile('|'.join(linux_names), re.IGNORECASE).search(message_object.text) and message_object.text != "linux to szrot":
                 self.send(Message (text="I'd just like to interject for a moment. What you’re referring to as Linux, "
                                         "is in fact, GNU/Linux, or as I’ve recently taken to calling it, "
                                         "GNU plus Linux. Linux is not an operating system unto itself, but rather "
