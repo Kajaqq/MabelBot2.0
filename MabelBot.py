@@ -5,7 +5,6 @@ import wikipedia
 
 # presety
 id_emilki = "100011357566074"
-id_dukata = ""
 id_kajaka = ["100002151786860"]
 id_grupki = "943760085727075"
 loop = False
@@ -14,7 +13,7 @@ Potezny_login = ''
 Potezny_password = ''
 
 
-def wikikurwa(user_id, term):
+def wikikurwa(term):
     if term == "AMD":
         wyszukiwanie = wikipedia.search("Kał")
         return wikipedia.summary(wyszukiwanie[0], 1)
@@ -31,6 +30,8 @@ class MabelBot(Client):
         self.markAsDelivered(thread_id, message_object.uid)
         print("%s napisal: %s" % (author_id, message_object.text))  # output log
         if thread_type == ThreadType.GROUP and author_id != self.uid:
+            if message_object.text[0:4] == "/wiki":
+                self.send(Message(text=wikikurwa(message_object.text[5:]), thread_id, thread_type)
             if message_object.text == "co":
                 self.send(Message(text='jajco kurwa'), thread_id, thread_type)
             elif message_object.text == "nk":
@@ -44,21 +45,6 @@ class MabelBot(Client):
                                  '/Richard_Stallman_by_Anders_Brenna_01.jpg',
                                  message=Message(text='Stallman wlatuje'),
                                  thread_id=thread_id, thread_type=thread_type)
-            elif message_object.text == "/makeamdgreatagain":
-                self.removeUserFromGroup(id_emilki, id_grupki)
-            elif message_object.text == "/jebkomunizm":
-                self.changeThreadTitle('Niech żyje jedność narodu', thread_id)
-            elif message_object.text == "reload":
-                self.removeUserFromGroup(author_id, id_grupki)
-                self.addUsersToGroup(author_id, id_grupki)
-            elif message_object.text == "dukatkrul":
-                if author_id == id_dukata:
-                    self.send(Message(text='Dukat Krul'), thread_id, thread_type)
-                self.send(Message(text='nie jesteś dukatem'), thread_id, ThreadType.GROUP)
-                self.removeUserFromGroup(author_id, id_grupki)
-            elif message_object.text == "exit":
-                self.send(Message(text='No elo'), thread_id, ThreadType.GROUP)
-                self.removeUserFromGroup(author_id, id_grupki)
             elif message_object.text == "/poilebananywlidlu":
                 self.send(Message(text='3,79 zł/kg'), thread_id, thread_type)
             elif message_object.text == "/poilebuleczkiwbiedrze":
@@ -72,8 +58,7 @@ class MabelBot(Client):
                 self.send(Message(text='Gratuluje worka'), thread_id, thread_type)
             elif message_object.text == "/help":
                 self.send(Message(text="Pomoc MabelBota 2.0\nBased on d3suu's MabelBot\nModified by Kajak2137"
-                                       "\nco\n/wikipedia\njapierdole.png\n/makeamdgreatagain\n/jebkomunizm\n"
-                                       "dukatkrul\nexit"
+                                       "\nco\n/wikipedia\njapierdole.png\n/makeamdgreatagain"
                                        "\nARKA GDYNIA\nZAGLEBIE SOSNOWIEC"
                                        "\n/poilebananywlidlu\n/poilebuleczkiwbiedrze"
                                        "\nlinux to szrot"),
