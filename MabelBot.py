@@ -3,6 +3,7 @@ from fbchat import Client
 from fbchat.models import *
 import wikipedia
 import re
+import buleczki_lib
 
 # presety
 id_emilki = "100011357566074"
@@ -50,7 +51,7 @@ class MabelBot(Client):
             elif message_object.text == "/poilebananywlidlu":
                 self.send(Message(text='3,79 zł/kg'), thread_id, thread_type)
             elif message_object.text == "/poilebuleczkiwbiedrze":
-                self.send(Message(text='0,49 zł/szt.'), thread_id, thread_type)
+                self.send(Message(text=buleczki()), thread_id, thread_type)
             elif message_object.text == "reload":
                 self.removeUserFromGroup(author_id, id_grupki)
                 self.addUsersToGroup(author_id, id_grupki)
