@@ -68,7 +68,7 @@ def sendShit(msg):
 class MabelBot(Client):
     def onMessage(self, author_id, message_object, thread_id, thread_type, **kwargs):
         self.markAsDelivered(thread_id, message_object.uid)
-        print("%s napisal: %s" % (author_id, message_object.text.encode('utf-8')))  # output log
+        print("%s napisal: %s" % (author_id, message_object.text))  # output log
         if thread_type == ThreadType.GROUP and author_id not in banned_ids and author_id != self.uid:
 
             msg = message_object.text.lower()
@@ -132,7 +132,7 @@ class MabelBot(Client):
                 self.removeUserFromGroup(author_id, id_grupki)
                 self.addUsersToGroup(author_id, id_grupki)
 
-            elif love_react in msg:
+            elif msg in love_react:
                 self.reactToMessage(message_id=message_object.uid, reaction=MessageReaction.LOVE)
 
             elif msg == " ":
@@ -146,7 +146,7 @@ class MabelBot(Client):
                                        "\nlinux to szrot\nKtóry POTIS najlepszy?"),
                           thread_id, thread_type)
 
-            elif u"który potis najlepszy" in msg:
+            elif "który potis najlepszy" in msg:
                 self.send(Message(text='Ten za pobraniem'), thread_id, thread_type)
 
             elif re.compile('|'.join(linux_names), re.IGNORECASE).search(
