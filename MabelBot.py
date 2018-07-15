@@ -4,6 +4,7 @@ from fbchat.models import *
 import wikipedia
 import re
 import buleczki_lib
+import subprocess
 
 # presety
 id_emilki = "100011357566074"
@@ -16,6 +17,10 @@ wikipedia.set_lang("pl")
 Potezny_login = ''
 Potezny_password = ''
 
+def goraca_aktualizacja(message_object, thread_id, thread_type):
+    message_object.send(Message(text="Aktualizuje bota..."), thread_id, thread_type)
+    subprocess.call(['./hotfix.sh'])
+    exit()
 
 def wikikurwa(term):
     term = term.decode('utf-8')
@@ -90,6 +95,9 @@ class MabelBot(Client):
             if msg == "/plucietotalne":
                 self.sendLocalImage('plucie.gif', message=Message(text='Tfu!'),
                                     thread_id=thread_id, thread_type=thread_type)
+                
+            elif msg == "/update":
+                goraca_aktualizacja(self, thread_id, thread_type)
 
             elif msg == "co":
                 self.send(Message(text='jajco kurwa'), thread_id, thread_type)
