@@ -6,6 +6,7 @@ import re
 import buleczki_lib
 import subprocess
 from most_lib import czymostjestotwarty
+from luszownictwo import lurczak
 
 # presety
 from MabelPassy import MabelConfig
@@ -174,7 +175,8 @@ class MabelBot(Client):
                                        "combination with the GNU operating system: the whole system is basically GNU "
                                        "with Linux added, or GNU/Linux. All the so-called “Linux” distributions are"
                                        "really distributions of GNU/Linux"), thread_id, thread_type)
-
+            elif msg == "/kurczak":
+                self.send(Message(text=lurczak()), thread_id, thread_type)
         else:
             # Sends the data to the inherited onMessage, so that we can still see when a message is recieved
             super(MabelBot, self).onMessage(author_id=author_id, message_object=message_object,
