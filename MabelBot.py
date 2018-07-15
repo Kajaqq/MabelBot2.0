@@ -5,16 +5,21 @@ import wikipedia
 import re
 import buleczki_lib
 import subprocess
-import login_bot
 
 # presety
-id_emilki = "100011357566074"
-id_kajaka = ["100002151786860"]
-id_grupki = "943760085727075"
+from MabelPassy import MabelConfig
+
+id_emilki = MabelConfig.idEmilki
+id_kajaka = MabelConfig.idKajaka
+id_grupki = MabelConfig.idGrupki
+banned_ids = MabelConfig.bannned_ids
 linux_names = ["linuch", "linux", "linuks"]
-love_react = ["linux to szrot", "GNU/Linux"]
+love_react = ["linux to szrot", "linux ty kurwo jebana", "gnu/linux"]
 mTable = []
 wikipedia.set_lang("pl")
+Mabel_login = MabelConfig.login
+Mabel_password = MabelConfig.password
+
 
 def goraca_aktualizacja(message_object, thread_id, thread_type):
     message_object.send(Message(text="Aktualizuje bota..."), thread_id, thread_type)
@@ -63,10 +68,10 @@ def sendShit(msg):
 class MabelBot(Client):
     def onMessage(self, author_id, message_object, thread_id, thread_type, **kwargs):
         self.markAsDelivered(thread_id, message_object.uid)
-        print("%s napisal: %s" % (author_id, message_object.text))  # output log
-        if thread_type == ThreadType.GROUP and author_id != self.uid:
+        print("%s napisal: %s" % (author_id, message_object.text.encode('utf-8')))  # output log
+        if thread_type == ThreadType.GROUP and author_id not in banned_ids and author_id != self.uid:
 
-            msg = message_object.text.lower()
+            msg = message_object.text.lower().decode('utf8')
 
             if msg.startswith('/add'):
                 msg1 = msg.split()
@@ -80,11 +85,11 @@ class MabelBot(Client):
                             f_buffer.close()
                             read_commands()
                         else:
-                            self.send(Message(text="Command already exists!"), thread_id, thread_type)
+                            self.send(Message(text="Komenda lusz istnieje"), thread_id, thread_type)
                     else:
-                        self.send(Message(text="It can't be only /"), thread_id, thread_type)
+                        self.send(Message(text="Nie mozesz dac samego /"), thread_id, thread_type)
                 else:
-                    self.send(Message(text="Three or more words needed!"), thread_id, thread_type)
+                    self.send(Message(text="Trzy lub więcej słowa potrzebne potisie"), thread_id, thread_type)
 
             if msg[:4] == "/wiki":
                 self.send(Message(text=wikikurwa(message_object.text[6:])), thread_id, thread_type)
@@ -127,7 +132,7 @@ class MabelBot(Client):
                 self.removeUserFromGroup(author_id, id_grupki)
                 self.addUsersToGroup(author_id, id_grupki)
 
-            elif msg == "linux to szrot" or msg == "GNU/Linux":
+            elif love_react in msg:
                 self.reactToMessage(message_id=message_object.uid, reaction=MessageReaction.LOVE)
 
             elif msg == " ":
@@ -184,6 +189,6 @@ class MabelBot(Client):
             self.addUsersToGroup(id_emilki, id_grupki)
 
 
-bot = MabelBot(login_bot.Potezny_login(), login_bot.Potezny_password())
+bot = MabelBot(Mabel_login, Mabel_password)
 bot.send(Message(text='Jestem!'), thread_id=id_grupki, thread_type=ThreadType.GROUP)
 bot.listen()
