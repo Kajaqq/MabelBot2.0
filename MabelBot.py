@@ -19,6 +19,7 @@ Potezny_password = ''
 
 def goraca_aktualizacja(message_object, thread_id, thread_type):
     message_object.send(Message(text="Aktualizuje bota..."), thread_id, thread_type)
+    subprocess.call(['chmod', '+x', 'hotfix.sh'])
     subprocess.call(['./hotfix.sh'])
     exit()
 
