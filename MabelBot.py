@@ -71,7 +71,7 @@ class MabelBot(Client):
         print("%s napisal: %s" % (author_id, message_object.text.encode('utf-8')))  # output log
         if thread_type == ThreadType.GROUP and author_id not in banned_ids and author_id != self.uid:
 
-            msg = message_object.text.lower().decode('utf8')
+            msg = message_object.text.lower()
 
             if msg.startswith('/add'):
                 msg1 = msg.split()
