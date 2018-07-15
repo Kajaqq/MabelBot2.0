@@ -1,4 +1,4 @@
-﻿# This Python file uses the following encoding: utf-8
+# This Python file uses the following encoding: utf-8
 from fbchat import Client
 from fbchat.models import *
 import wikipedia
@@ -10,6 +10,7 @@ id_emilki = "100011357566074"
 id_kajaka = ["100002151786860"]
 id_grupki = "943760085727075"
 linux_names = ["gnu/linux", "linux"]
+mTable = []
 wikipedia.set_lang("pl")
 Potezny_login = ''
 Potezny_password = ''
@@ -26,37 +27,99 @@ def wikikurwa(term):
             return "Błąd: %s" % (e)
 
 
+def readCommands():
+    del mTable[:]
+    with open("gownoposty.txt") as file:
+        for line in file:
+            cmd = line.split()
+            mTable.append(cmd[0])
+
+
+readCommands()
+
+
+def sendShit(msg):
+    cmd_buff = msg.split()
+    cmd = cmd_buff[0]
+    index = mTable.index(cmd)
+    m_buffer = open("gownoposty.txt", "r")
+    with m_buffer as file:
+        for i, line in enumerate(file):
+            if i == index:
+                cmd_buff = line.split()
+                msg = ' '.join(cmd_buff[1:])
+    m_buffer.close()
+    return msg
+
+
 class MabelBot(Client):
     def onMessage(self, author_id, message_object, thread_id, thread_type, **kwargs):
         self.markAsDelivered(thread_id, message_object.uid)
         print("%s napisal: %s" % (author_id, message_object.text))  # output log
         if thread_type == ThreadType.GROUP and author_id != self.uid:
-            if "/wiki" in message_object.text.lower():
+
+            if message_object.text.startswith('/add'):
+                msg = message_object.text.split()
+                if len(msg) > 2:
+                    if msg[1] != '/':
+                        if msg[1] not in mTable:
+                            f_content = ' '.join(msg[1:])
+                            f_buffer = open("gownoposty.txt", "a")
+                            f_buffer.write(f_content + '\n')
+                            self.send(Message(text="Added command: {:s}".format(msg[1])), thread_id, thread_type)
+                            f_buffer.close()
+                            readCommands()
+                        else:
+                            self.send(Message(text="Command already exists!"), thread_id, thread_type)
+                    else:
+                        self.send(Message(text="It can't be only /"), thread_id, thread_type)
+                else:
+                    self.send(Message(text="Three or more words needed!"), thread_id, thread_type)
+
+            if message_object.text.lower().startswith("/wiki"):
                 self.send(Message(text=wikikurwa(message_object.text[6:])), thread_id, thread_type)
+
+            if message_object.text.startswith(tuple(mTable)):
+                self.send(Message(text=sendShit(message_object.text)), thread_id, thread_type)
+
+            if message_object.text.lower() == "/plucietotalne" :
+                self.sendLocalImage('plucie.gif', message=Message(text='Tfu!'),
+                                      thread_id=thread_id, thread_type=thread_type)
+
             elif message_object.text.lower() == "co":
                 self.send(Message(text='jajco kurwa'), thread_id, thread_type)
+
             elif message_object.text.lower() == "nk":
                 self.send(Message(text='co, rąk ni mosz do roboty?'), thread_id, thread_type)
+
             elif message_object.text.lower() == "arka gdynia":
                 self.send(Message(text='KURWA ŚWINIA'), thread_id, thread_type)
+
             elif message_object.text.lower() == "zaglebie sosnowiec":
                 self.send(Message(text='KURWA BOMBOWIEC'), thread_id, thread_type)
+
             elif message_object.text.lower() == "japierdole.png":
                 self.sendRemoteImage('https://upload.wikimedia.org/wikipedia/commons/f/f3'
                                      '/Richard_Stallman_by_Anders_Brenna_01.jpg',
                                      message=Message(text='Stallman wlatuje'),
                                      thread_id=thread_id, thread_type=thread_type)
+
             elif message_object.text.lower() == "/poilebananywlidlu":
                 self.send(Message(text='3,79 zł/kg'), thread_id, thread_type)
+
             elif message_object.text.lower() == "/poilebuleczkiwbiedrze":
                 self.send(Message(text=buleczki_lib.buleczki()), thread_id, thread_type)
+
             elif message_object.text.lower() == "reload":
                 self.removeUserFromGroup(author_id, id_grupki)
                 self.addUsersToGroup(author_id, id_grupki)
+
             elif message_object.text.lower() == "linux to szrot" or message_object.text == "GNU/Linux":
                 self.reactToMessage(message_id=message_object.uid, reaction=MessageReaction.LOVE)
+
             elif message_object.text.lower() == u" ":
                 self.send(Message(text='Gratuluje worka'), thread_id, thread_type)
+
             elif message_object.text.lower() == "/help":
                 self.send(Message(text="Pomoc MabelBota 2.0\nBased on d3suu's MabelBot\nModified by Kajak2137"
                                        "\nco\n/wikipedia\njapierdole.png\n/makeamdgreatagain"
@@ -64,6 +127,7 @@ class MabelBot(Client):
                                        "\n/poilebananywlidlu\n/poilebuleczkiwbiedrze"
                                        "\nlinux to szrot\nKtóry POTIS najlepszy?"),
                           thread_id, thread_type)
+
             elif "który potis najlepszy" in message_object.text.lower():
                 self.send(Message(text='Ten za pobraniem'), thread_id, thread_type)
             elif re.compile('|'.join(linux_names), re.IGNORECASE).search(message_object.text) and message_object.text != "linux to szrot" and "gnu" not in message_object.text.lower():
