@@ -5,6 +5,7 @@ import wikipedia
 import re
 import buleczki_lib
 import subprocess
+from most_lib import czymostjestotwarty
 
 # presety
 from MabelPassy import MabelConfig
@@ -27,6 +28,7 @@ def goraca_aktualizacja(message_object, thread_id, thread_type):
     subprocess.call(['./hotfix.sh'])
     exit()
 
+
 def wikikurwa(term):
     term = term.decode('utf-8')
     if term == "AMD":
@@ -37,8 +39,7 @@ def wikikurwa(term):
             wyszukiwanie = wikipedia.search(term)
             return wikipedia.summary(wyszukiwanie[0], 3)
         except Exception as e:
-            return "Błąd: %s" % (e)
-
+            return "Błąd: %s" % e
 
 def read_commands():
     del mTable[:]
@@ -104,6 +105,9 @@ class MabelBot(Client):
             elif msg == "/update":
                 goraca_aktualizacja(self, thread_id, thread_type)
 
+            elif msg == "/czymostjestotwarty":
+                self.send(Message(text=czymostjestotwarty()), thread_id, thread_type)
+
             elif msg == "co":
                 self.send(Message(text='jajco kurwa'), thread_id, thread_type)
 
@@ -146,7 +150,7 @@ class MabelBot(Client):
                                        "\nlinux to szrot\nKtóry POTIS najlepszy?"),
                           thread_id, thread_type)
 
-            elif "który potis najlepszy" in msg:
+            elif u"który potis najlepszy" in msg:
                 self.send(Message(text='Ten za pobraniem'), thread_id, thread_type)
 
             elif re.compile('|'.join(linux_names), re.IGNORECASE).search(
