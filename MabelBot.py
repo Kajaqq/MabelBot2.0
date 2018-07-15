@@ -5,6 +5,7 @@ import wikipedia
 import re
 import buleczki_lib
 import subprocess
+import login_bot
 
 # presety
 id_emilki = "100011357566074"
@@ -14,8 +15,6 @@ linux_names = ["linuch", "linux", "linuks"]
 love_react = ["linux to szrot", "GNU/Linux"]
 mTable = []
 wikipedia.set_lang("pl")
-Potezny_login = ''
-Potezny_password = ''
 
 def goraca_aktualizacja(message_object, thread_id, thread_type):
     message_object.send(Message(text="Aktualizuje bota..."), thread_id, thread_type)
@@ -67,7 +66,7 @@ class MabelBot(Client):
         print("%s napisal: %s" % (author_id, message_object.text))  # output log
         if thread_type == ThreadType.GROUP and author_id != self.uid:
 
-            msg = message_object.text.lower().decode('utf8')
+            msg = message_object.text.lower()
 
             if msg.startswith('/add'):
                 msg1 = msg.split()
@@ -185,5 +184,5 @@ class MabelBot(Client):
             self.addUsersToGroup(id_emilki, id_grupki)
 
 
-bot = MabelBot(Potezny_login, Potezny_password)
+bot = MabelBot(login_bot.Potezny_login(), login_bot.Potezny_password())
 bot.listen()
