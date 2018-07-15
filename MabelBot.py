@@ -185,4 +185,5 @@ class MabelBot(Client):
 
 
 bot = MabelBot(login_bot.Potezny_login(), login_bot.Potezny_password())
+bot.send(Message(text='Jestem!'), thread_id=id_grupki, thread_type=ThreadType.GROUP)
 bot.listen()
