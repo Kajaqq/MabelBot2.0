@@ -30,7 +30,7 @@ def goraca_aktualizacja(message_object, thread_id, thread_type):
     exit()
 
 
-def wikikurwa(term):
+def wiki_kobietalekkichobyczajow(term):
     term = term.decode('utf-8')
     if term == "AMD":
         wyszukiwanie = wikipedia.search(u"Kał")
@@ -94,7 +94,7 @@ class MabelBot(Client):
                     self.send(Message(text="Trzy lub więcej słowa potrzebne potisie"), thread_id, thread_type)
 
             if msg[:4] == "/wiki":
-                self.send(Message(text=wikikurwa(message_object.text[6:])), thread_id, thread_type)
+                self.send(Message(text=wiki_kobietalekkichobyczajow(message_object.text[6:])), thread_id, thread_type)
 
             if msg.startswith(tuple(mTable)):
                 self.send(Message(text=sendShit(message_object.text)), thread_id, thread_type)
