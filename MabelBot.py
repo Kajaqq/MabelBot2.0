@@ -25,7 +25,7 @@ Mabel_password = MabelConfig.password
 
 
 def goraca_aktualizacja(message_object, thread_id, thread_type):
-    message_object.send(Message(text="Aktualizuje bota..."), thread_id, thread_type)
+    message_object.send(Message(text="Aktualizuję bota..."), thread_id, thread_type)
     subprocess.call(['chmod', '+x', 'hotfix.sh'])
     subprocess.call(['./hotfix.sh'])
     exit()
@@ -71,7 +71,7 @@ def sendShit(msg):
 class MabelBot(Client):
     def onMessage(self, author_id, message_object, thread_id, thread_type, **kwargs):
         self.markAsDelivered(thread_id, message_object.uid)
-        print("%s napisal: %s" % (author_id, message_object.text))  # output log
+        print("%s napisał: %s" % (author_id, message_object.text))  # output log
         if thread_type == ThreadType.GROUP and author_id not in banned_ids and author_id != self.uid:
 
             msg = message_object.text.lower()
@@ -84,13 +84,13 @@ class MabelBot(Client):
                             f_content = ' '.join(msg[1:])
                             f_buffer = open("gownoposty.txt", "a")
                             f_buffer.write(f_content + '\n')
-                            self.send(Message(text="Added command: {:s}".format(msg[1])), thread_id, thread_type)
+                            self.send(Message(text="No elo dodałem: {:s}".format(msg[1])), thread_id, thread_type)
                             f_buffer.close()
                             read_commands()
                         else:
                             self.send(Message(text="Komenda lusz istnieje"), thread_id, thread_type)
                     else:
-                        self.send(Message(text="Nie mozesz dac samego /"), thread_id, thread_type)
+                        self.send(Message(text="Nie możesz dać samego /"), thread_id, thread_type)
                 else:
                     self.send(Message(text="Trzy lub więcej słowa potrzebne potisie"), thread_id, thread_type)
 
@@ -149,8 +149,8 @@ class MabelBot(Client):
 
             elif msg == "/help":
                 self.send(Message(text="Pomoc MabelBota 2.0\nBased on d3suu's MabelBot\nModified by Kajak2137"
-                                       "\nco\n/wiki\njapierdole.png\n/makeamdgreatagain"
-                                       "\nARKA GDYNIA\nZAGLEBIE SOSNOWIEC"
+                                       "\nco\n/wiki\njapierdole.png"
+                                       "\nARKA GDYNIA\nZAGŁĘBIE SOSNOWIEC"
                                        "\n/poilebananywlidlu\n/poilebuleczkiwbiedrze"
                                        "\nlinux to szrot\nKtóry POTIS najlepszy?"),
                           thread_id, thread_type)

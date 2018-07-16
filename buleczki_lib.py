@@ -14,4 +14,4 @@ def buleczki():
     bagietka_doc = html.fromstring(bagietka)
     bagietka_html_price = bagietka_doc.cssselect("span")[42].text_content()
     bagietka_price = bagietka_html_price[17:28]
-    return "Bagietka Czosnkowa: " + bagietka_price.decode('utf8')
+    return "Bagietka Czosnkowa: " + bagietka_price
