@@ -5,6 +5,7 @@ import wikipedia
 import re
 import buleczki_lib
 import subprocess
+from d3s_lib import gitgud
 from most_lib import czymostjestotwarty
 from luszownictwo import lurczak
 
@@ -31,7 +32,6 @@ def goraca_aktualizacja(message_object, thread_id, thread_type):
 
 
 def wiki_kobietalekkichobyczajow(term):
-    term = term.decode('utf-8')
     if term == "AMD":
         wyszukiwanie = wikipedia.search(u"Kał")
         return wikipedia.summary(wyszukiwanie[0], 1)
@@ -41,6 +41,7 @@ def wiki_kobietalekkichobyczajow(term):
             return wikipedia.summary(wyszukiwanie[0], 3)
         except Exception as e:
             return "Błąd: %s" % e
+
 
 def read_commands():
     del mTable[:]
@@ -93,18 +94,21 @@ class MabelBot(Client):
                 else:
                     self.send(Message(text="Trzy lub więcej słowa potrzebne potisie"), thread_id, thread_type)
 
-            if msg[:4] == "/wiki":
+            elif msg.startswith("/wiki"):
                 self.send(Message(text=wiki_kobietalekkichobyczajow(message_object.text[6:])), thread_id, thread_type)
 
-            if msg.startswith(tuple(mTable)):
+            elif msg.startswith(tuple(mTable)):
                 self.send(Message(text=sendShit(message_object.text)), thread_id, thread_type)
 
-            if msg == "/plucietotalne":
+            elif msg == "/plucietotalne":
                 self.sendLocalImage('plucie.gif', message=Message(text='Tfu!'),
                                     thread_id=thread_id, thread_type=thread_type)
-                
+
             elif msg == "/update":
                 goraca_aktualizacja(self, thread_id, thread_type)
+
+            elif msg.startswith("/git"):
+                self.send(Message(text=gitgud(msg[5:])), thread_id, thread_type)
 
             elif msg == "/czymostjestotwarty":
                 self.send(Message(text=czymostjestotwarty()), thread_id, thread_type)
@@ -118,7 +122,7 @@ class MabelBot(Client):
             elif msg == "arka gdynia":
                 self.send(Message(text='KURWA ŚWINIA'), thread_id, thread_type)
 
-            elif msg == "zaglebie sosnowiec":
+            elif msg == u"zagłębie sosnowiec":
                 self.send(Message(text='KURWA BOMBOWIEC'), thread_id, thread_type)
 
             elif msg == "japierdole.png":
@@ -151,7 +155,7 @@ class MabelBot(Client):
                                        "\nlinux to szrot\nKtóry POTIS najlepszy?"),
                           thread_id, thread_type)
 
-            elif u"który potis najlepszy" in msg:
+            elif "który potis najlepszy" in msg:
                 self.send(Message(text='Ten za pobraniem'), thread_id, thread_type)
 
             elif re.compile('|'.join(linux_names), re.IGNORECASE).search(

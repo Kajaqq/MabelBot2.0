@@ -1,6 +1,7 @@
 # coding=utf-8
-from datetime import datetime
 from bisect import bisect_left
+from datetime import datetime
+
 import pytz
 
 normalne = [4, 5, 6, 9, 10]
@@ -42,4 +43,3 @@ def takeClosest(myList, myNumber):
         return after
     else:
         return before
-
