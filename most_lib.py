@@ -9,7 +9,7 @@ zamkniete = [11, 12, 1, 2, 3]
 normalne_godziny_otwarcia = [1100, 1300, 1430, 1730]
 wakacyjne_godziny_otwarcia = [830, 1130, 1300, 1430, 1730, 1900, 2120]
 normalne_godziny_zamkniecia = [1030, 1200, 1330, 1600]
-wakacyjne_godziny_zamkniecia = [800, 1030, 1200, 1330, 1430, 1830, 2030, 2120]
+wakacyjne_godziny_zamkniecia = [800, 1030, 1200, 1330, 1430, 1830, 2030]
 
 
 def czymostjestotwarty():
@@ -32,8 +32,9 @@ def czymostjestotwarty():
         return "Coś sie popsuło"
 
 
-def closest(myList, myNumber):
-    x = int(take_closest(myList, myNumber))
+def get_closest(myList, myNumber):
+    pos = bisect_left(myList, myNumber)
+    x = int(myList[pos])
     y = str(x)
     if x <= 999:
         z = y[0] + ":" + y[1:]
@@ -41,17 +42,3 @@ def closest(myList, myNumber):
     else:
         z = y[:2] + ":" + y[2:]
         return z
-
-
-def take_closest(myList, myNumber):
-    pos = bisect_left(myList, myNumber)
-    if pos == 0:
-        return myList[0]
-    if pos == len(myList):
-        return myList[-1]
-    before = myList[pos - 1]
-    after = myList[pos]
-    if after - myNumber < myNumber - before:
-        return after
-    else:
-        return before
