@@ -9,7 +9,7 @@ zamkniete = [11, 12, 1, 2, 3]
 normalne_godziny_otwarcia = [1100, 1300, 1430, 1730]
 wakacyjne_godziny_otwarcia = [830, 1130, 1300, 1430, 1730, 1900, 2120]
 normalne_godziny_zamkniecia = [1030, 1200, 1330, 1600]
-wakacyjne_godziny_zamkniecia = [800, 1030, 1200, 1330, 1430, 1830, 2030]
+wakacyjne_godziny_zamkniecia = [800, 1030, 1200, 1330, 1600, 1830, 2030]
 
 
 def czymostjestotwarty():
