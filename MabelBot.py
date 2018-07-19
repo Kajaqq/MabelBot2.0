@@ -162,8 +162,7 @@ class MabelBot(Client):
             elif "który potis najlepszy" in msg:
                 self.send(Message(text='Ten za pobraniem'), thread_id, thread_type)
 
-            elif re.compile('|'.join(linux_names), re.IGNORECASE).search(
-                    msg) and msg != "linux to szrot" and "gnu" not in msg:
+            elif "kajak to debil" in msg:
                 self.send(Message(text="I'd just like to interject for a moment. What you’re referring to as Linux, "
                                        "is in fact, GNU/Linux, or as I’ve recently taken to calling it, "
                                        "GNU plus Linux. Linux is not an operating system unto itself, but rather "
