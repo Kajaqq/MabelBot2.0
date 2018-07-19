@@ -125,6 +125,10 @@ class MabelBot(Client):
             elif msg == u"zagłębie sosnowiec":
                 self.send(Message(text='KURWA BOMBOWIEC'), thread_id, thread_type)
 
+            elif msg == "łódź bałuty":
+                self.sendRemoteImage('http://www33.patrz.pl/u/f/29/39/76/293976.jpg',
+                                     thread_id=thread_id, thread_type=thread_type)
+
             elif msg == "japierdole.png":
                 self.sendRemoteImage('https://upload.wikimedia.org/wikipedia/commons/f/f3'
                                      '/Richard_Stallman_by_Anders_Brenna_01.jpg',
