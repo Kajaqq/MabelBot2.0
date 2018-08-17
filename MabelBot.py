@@ -145,7 +145,7 @@ class MabelBot(Client):
             elif msg == "2deep4u":
                 self.sendRemoteImage('https://i.imgur.com/xulBcmn.png', thread_id, thread_type)
 
-            elif msg == "Hawajska to szrot":
+            elif msg == "hawajska to szrot":
                 self.reactToMessage(message_id=message_object.uid, reaction=MessageReaction.ANGRY)
                 self.send(Message(
                     text="Możecie nalać polaczkowi Don Perignona, albo dobrej whisky 18 letniej. Polaczek wypije "
@@ -179,9 +179,6 @@ class MabelBot(Client):
 
             elif msg in love_react:
                 self.reactToMessage(message_id=message_object.uid, reaction=MessageReaction.LOVE)
-
-            elif author_id == id_wujcika and msg.startswith("kajak"):
-                self.reactToMessage(message_id=message_object.uid, reaction=MessageReaction.ANGRY)
 
             elif msg == "/help":
                 self.send(Message(text="Pomoc MabelBota 2.0\nBased on d3suu's MabelBot\nModified by Kajak2137"
