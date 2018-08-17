@@ -165,7 +165,7 @@ class MabelBot(Client):
                          "dokładnością 100% i nawet WHO i ONZ przyznali, że u rodzin w których dominuje alkoholizm, "
                          "narkomaństwo i kazirodztwo zawsze pojawia się niechęć do pizzy z ananasem. ")
                     , thread_id, thread_type)
-                 self.sendRemoteImage('https://www.wykop.pl/cdn/c3201142/comment_qVLi8J5yORGswBKuKw1lem3XEdAbkMav.jpg', thread_id=thread_id, thread_type=thread_type)
+                self.sendRemoteImage('https://www.wykop.pl/cdn/c3201142/comment_qVLi8J5yORGswBKuKw1lem3XEdAbkMav.jpg', thread_id=thread_id, thread_type=thread_type)
 
             elif msg == "/poilebananywlidlu":
                 self.send(Message(text='3,79 zł/kg'), thread_id, thread_type)
