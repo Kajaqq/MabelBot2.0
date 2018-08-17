@@ -1,13 +1,16 @@
 # This Python file uses the following encoding: utf-8
+import threading
+
 from fbchat import Client
 from fbchat.models import *
 import wikipedia
-import re
+import clever
 import buleczki_lib
 import subprocess
 from d3s_lib import gitgud
 from most_lib import czymostjestotwarty
 from luszownictwo import lurczak
+from random import randint
 
 # presety
 from MabelPassy import MabelConfig
@@ -15,9 +18,13 @@ from MabelPassy import MabelConfig
 id_emilki = MabelConfig.idEmilki
 id_kajaka = MabelConfig.idKajaka
 id_grupki = MabelConfig.idGrupki
+id_wujcika = MabelConfig.idWujcika
 banned_ids = MabelConfig.bannned_ids
+cleveruser = MabelConfig.cleveruser
+cleverapi = MabelConfig.cleverkey
 linux_names = ["linuch", "linux", "linuks"]
-love_react = ["linux to szrot", "linux ty kurwo jebana", "gnu/linux"]
+shit_searches = ['AMD', 'Asuka', 'fata morgana no yakata']
+love_react = ["linux ty kurwo", "evangelion to szrot", "jojo je gunwo", "Asuka jest kurwa"]
 mTable = []
 wikipedia.set_lang("pl")
 Mabel_login = MabelConfig.login
@@ -32,7 +39,7 @@ def goraca_aktualizacja(message_object, thread_id, thread_type):
 
 
 def wiki_kobietalekkichobyczajow(term):
-    if term == "AMD":
+    if term in shit_searches:
         wyszukiwanie = wikipedia.search(u"Kał")
         return wikipedia.summary(wyszukiwanie[0], 1)
     else:
@@ -72,10 +79,11 @@ class MabelBot(Client):
     def onMessage(self, author_id, message_object, thread_id, thread_type, **kwargs):
         self.markAsDelivered(thread_id, message_object.uid)
         print("%s napisał: %s" % (author_id, message_object.text))  # output log
-        if thread_type == ThreadType.GROUP and author_id not in banned_ids and author_id != self.uid:
-
+        cb = clever.Cleverbot(cleveruser, cleverapi)
+        if thread_type == ThreadType.GROUP and thread_id in id_grupki and author_id != self.uid:
             msg = message_object.text.lower()
-
+            global aipreset
+            aipreset = ""
             if msg.startswith('/add'):
                 msg1 = msg.split()
                 if len(msg1) > 2:
@@ -88,14 +96,17 @@ class MabelBot(Client):
                             f_buffer.close()
                             read_commands()
                         else:
-                            self.send(Message(text="Komenda lusz istnieje"), thread_id, thread_type)
+                            self.send(Message(text="Komenda już istnieje"), thread_id, thread_type)
                     else:
                         self.send(Message(text="Nie możesz dać samego /"), thread_id, thread_type)
                 else:
-                    self.send(Message(text="Trzy lub więcej słowa potrzebne potisie"), thread_id, thread_type)
+                    self.send(Message(text="Trzy lub więcej słowa potrzebne"), thread_id, thread_type)
 
             elif msg.startswith("/wiki"):
                 self.send(Message(text=wiki_kobietalekkichobyczajow(message_object.text[6:])), thread_id, thread_type)
+
+            elif msg.startswith("/echo"):
+                self.send(Message(text=message_object.text[6:]), thread_id, thread_type)
 
             elif msg.startswith(tuple(mTable)):
                 self.send(Message(text=sendShit(message_object.text)), thread_id, thread_type)
@@ -113,6 +124,9 @@ class MabelBot(Client):
             elif msg == "/czymostjestotwarty":
                 self.send(Message(text=czymostjestotwarty()), thread_id, thread_type)
 
+            elif msg == "/random":
+                self.send(Message(text=randint(1, 100)), thread_id, thread_type)
+
             elif msg == "co":
                 self.send(Message(text='jajco kurwa'), thread_id, thread_type)
 
@@ -128,12 +142,30 @@ class MabelBot(Client):
             elif msg == "łódź bałuty":
                 self.sendRemoteImage('http://www33.patrz.pl/u/f/29/39/76/293976.jpg',
                                      thread_id=thread_id, thread_type=thread_type)
+            elif msg == "2deep4u":
+                self.sendRemoteImage('https://i.imgur.com/xulBcmn.png', thread_id, thread_type)
 
-            elif msg == "japierdole.png":
-                self.sendRemoteImage('https://upload.wikimedia.org/wikipedia/commons/f/f3'
-                                     '/Richard_Stallman_by_Anders_Brenna_01.jpg',
-                                     message=Message(text='Stallman wlatuje'),
-                                     thread_id=thread_id, thread_type=thread_type)
+            elif msg == "Hawajska to szrot":
+                self.reactToMessage(message_id=message_object.uid, reaction=MessageReaction.ANGRY)
+                self.send(Message(
+                    text="Możecie nalać polaczkowi Don Perignona, albo dobrej whisky 18 letniej. Polaczek wypije "
+                         "duszkiem i powie, że cierpkie i jakieś mdłe. Dacie polakowi trufli to powie, że to jakiś "
+                         "zgniły czosnek. Zaparzycie polaczkowi dobrego espresso z dobrej, ręcznej maszyny, "
+                         "z świeżo mielonych ziaren bardzo dobrej jakości, powie że jakaś mała ta kawa i w ogóle "
+                         "kwaśna i i dziwnie smakuje. Dlatego mnie nie dziwi, że 3/4 z was, biedaki szkaluje "
+                         "HAWAJSKĄ. Nie dziwi mnie to, ponieważ wiem że jesteście tylko biednymi cebulakami i całe "
+                         "życie schabowe z mięsa za 7,99/kg. Nie znacie życia, wasze kubki smakowe są wypalone od "
+                         "podrobionych fajek i chujowej wódki. Nigdy nie mieliście okazji poznać smaków. Na widok "
+                         "pizzy z miodem byście pewnie skakali i darli mordę jak te małpy w zoo. Kompozycja "
+                         "słodko-słone, albo słodko-kwaśne to jedna z najlepszych rzeczy jakie można skonsumować. "
+                         "Prawdziwa eksplozja dla wyrafinowanych smakoszy. "
+                         "W cywilizowanej i rozwiniętej Japonii, kiedy córka przyprowadza i przedstawia swojego "
+                         "wybranka rodzicom, ci wykonują test. Podają mu Hawajską. Kiedy chłopak pizzy nie zje, "
+                         "albo powie że mu nie smakuje, to wiadomo że pochodzi z patologicznej rodziny. Test działa z "
+                         "dokładnością 100% i nawet WHO i ONZ przyznali, że u rodzin w których dominuje alkoholizm, "
+                         "narkomaństwo i kazirodztwo zawsze pojawia się niechęć do pizzy z ananasem. ")
+                    , thread_type, thread_id)
+                self.sendRemoteImage('https://i.imgur.com/xulBcmn.png', thread_id, thread_type)
 
             elif msg == "/poilebananywlidlu":
                 self.send(Message(text='3,79 zł/kg'), thread_id, thread_type)
@@ -148,46 +180,24 @@ class MabelBot(Client):
             elif msg in love_react:
                 self.reactToMessage(message_id=message_object.uid, reaction=MessageReaction.LOVE)
 
-            elif msg == " ":
-                self.send(Message(text='Gratuluje worka'), thread_id, thread_type)
+            elif author_id == id_wujcika and msg.startswith("kajak"):
+                self.reactToMessage(message_id=message_object.uid, reaction=MessageReaction.ANGRY)
 
             elif msg == "/help":
                 self.send(Message(text="Pomoc MabelBota 2.0\nBased on d3suu's MabelBot\nModified by Kajak2137"
-                                       "\nco\n/wiki\njapierdole.png"
+                                       "\nco\n/wiki"
                                        "\nARKA GDYNIA\nZAGŁĘBIE SOSNOWIEC"
                                        "\n/poilebananywlidlu\n/poilebuleczkiwbiedrze"
-                                       "\nlinux to szrot\nKtóry POTIS najlepszy?"),
+                                       "\nlinux ty kurwo\n/echo"),
                           thread_id, thread_type)
 
-            elif "który potis najlepszy" in msg:
-                self.send(Message(text='Ten za pobraniem'), thread_id, thread_type)
-
-            elif "kajak to debil" in msg:
-                self.send(Message(text="I'd just like to interject for a moment. What you’re referring to as Linux, "
-                                       "is in fact, GNU/Linux, or as I’ve recently taken to calling it, "
-                                       "GNU plus Linux. Linux is not an operating system unto itself, but rather "
-                                       "another free component of a fully functioning GNU system made useful by the "
-                                       "GNU corelibs, shell utilities and vital system components comprising a full "
-                                       "OS as defined by POSIX. "
-                                       "Many computer users run a modified version of the GNU system every day, "
-                                       "without realizing it. Through a peculiar turn of events, the version of GNU "
-                                       "which is widely used today is often called “Linux”, and many of its users "
-                                       "are not aware that it is basically the GNU system, developed by the GNU "
-                                       "Project. There really is a Linux, and these people are using it, "
-                                       "but it is just a part of the system they use. "
-                                       "Linux is the kernel: the program in the system that allocates the machine’s "
-                                       "resources to the other programs that you run. The kernel is an essential "
-                                       "part of an operating system, but useless by itself; it can only function in "
-                                       "the context of a complete operating system. Linux is normally used in "
-                                       "combination with the GNU operating system: the whole system is basically GNU "
-                                       "with Linux added, or GNU/Linux. All the so-called “Linux” distributions are"
-                                       "really distributions of GNU/Linux"), thread_id, thread_type)
             elif msg == "/kurczak":
                 self.send(Message(text=lurczak()), thread_id, thread_type)
-        else:
-            # Sends the data to the inherited onMessage, so that we can still see when a message is recieved
-            super(MabelBot, self).onMessage(author_id=author_id, message_object=message_object,
-                                            thread_id=id_grupki, thread_type=thread_type, **kwargs)
+            else:
+                # Sends the data to the inherited onMessage, so that we can still see when a message is recieved
+                super(MabelBot, self).onMessage(author_id=author_id, message_object=message_object,
+                                                thread_id=id_grupki, thread_type=thread_type, **kwargs)
+
         # koniec komend koniec komend koniec komend koniec komend koniec komend koniec komend koniec komend koniec komend koniec komend
 
     def on_people_added(self, user_ids):  # wywalka emilki
@@ -195,13 +205,10 @@ class MabelBot(Client):
             self.removeUserFromGroup(id_emilki, id_grupki)
             self.send(Message(text='Threat neutralized'), thread_id=id_grupki, thread_type=ThreadType.GROUP)
 
-    def on_person_removed(self, user_id):  # anty wywalka kajaka
-        if id_kajaka in user_id:
-            self.addUsersToGroup(id_kajaka, id_grupki)
-        else:
-            self.addUsersToGroup(id_emilki, id_grupki)
+    def onPersonRemoved(self, removed_id, author_id, thread_id, **kwargs):  # anty wywalka kajaka
+        t = threading.Timer(1.0, self.addUsersToGroup, [removed_id, thread_id])
+        t.start()
 
 
 bot = MabelBot(Mabel_login, Mabel_password)
-bot.send(Message(text='Jestem!'), thread_id=id_grupki, thread_type=ThreadType.GROUP)
 bot.listen()
