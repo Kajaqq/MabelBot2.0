@@ -2,32 +2,51 @@
 from fbchat import Client
 from fbchat.models import *
 import wikipedia
-import re
+
 import buleczki_lib
+import subprocess
+
+from MemeHandler import MemeHandler
+from thicc_lib import thiccify
+from d3s_lib import gitgud
+from most_lib import czymostjestotwarty
+from luszownictwo import lurczak
 
 # presety
-id_emilki = "100011357566074"
-id_kajaka = ["100002151786860"]
-id_grupki = "943760085727075"
-linux_names = ["gnu/linux", "linux"]
+from MabelPassy import MabelConfig
+
+id_emilki = MabelConfig.idEmilki
+id_kajaka = MabelConfig.idKajaka
+id_grupki = MabelConfig.idGrupki
+banned_ids = MabelConfig.bannned_ids
+linux_names = ["linuch", "linux", "linuks"]
+love_react = ["linux to szrot", "linux ty kurwo jebana", "gnu/linux"]
 mTable = []
 wikipedia.set_lang("pl")
-Potezny_login = ''
-Potezny_password = ''
+Mabel_login = MabelConfig.login
+Mabel_password = MabelConfig.password
 
-def wikikurwa(term):
+
+def goraca_aktualizacja(message_object, thread_id, thread_type):
+    message_object.send(Message(text="Aktualizuję bota..."), thread_id, thread_type)
+    subprocess.call(['chmod', '+x', 'hotfix.sh'])
+    subprocess.call(['./hotfix.sh'])
+    exit()
+
+
+def wiki_kobietalekkichobyczajow(term):
     if term == "AMD":
-        wyszukiwanie = wikipedia.search("Kał")
+        wyszukiwanie = wikipedia.search(u"Kał")
         return wikipedia.summary(wyszukiwanie[0], 1)
     else:
         try:
             wyszukiwanie = wikipedia.search(term)
             return wikipedia.summary(wyszukiwanie[0], 3)
         except Exception as e:
-            return "Błąd: %s" % (e)
+            return "Błąd: %s" % e
 
 
-def readCommands():
+def read_commands():
     del mTable[:]
     with open("gownoposty.txt") as file:
         for line in file:
@@ -35,7 +54,7 @@ def readCommands():
             mTable.append(cmd[0])
 
 
-readCommands()
+read_commands()
 
 
 def sendShit(msg):
@@ -55,107 +74,131 @@ def sendShit(msg):
 class MabelBot(Client):
     def onMessage(self, author_id, message_object, thread_id, thread_type, **kwargs):
         self.markAsDelivered(thread_id, message_object.uid)
-        print("%s napisal: %s" % (author_id, message_object.text))  # output log
-        if thread_type == ThreadType.GROUP and author_id != self.uid:
+        print("%s napisał: %s" % (author_id, message_object.text))  # output log
+        if thread_type == ThreadType.GROUP and author_id not in banned_ids and author_id != self.uid and thread_id == id_grupki:
 
-            if message_object.text.startswith('/add'):
-                msg = message_object.text.split()
-                if len(msg) > 2:
-                    if msg[1] != '/':
-                        if msg[1] not in mTable:
-                            f_content = ' '.join(msg[1:])
+            msg = message_object.text.lower()
+
+            if msg.startswith('/add'):
+                msg1 = msg.split()
+                if len(msg1) > 2:
+                    if msg1[1] != '/':
+                        if msg1[1] not in mTable:
+                            f_content = ' '.join(msg[4:])
                             f_buffer = open("gownoposty.txt", "a")
                             f_buffer.write(f_content + '\n')
-                            self.send(Message(text="Added command: {:s}".format(msg[1])), thread_id, thread_type)
+                            self.send(Message(text="No elo dodałem: {:s}".format(msg[1])), thread_id, thread_type)
                             f_buffer.close()
-                            readCommands()
+                            read_commands()
                         else:
-                            self.send(Message(text="Command already exists!"), thread_id, thread_type)
+                            self.send(Message(text="Komenda lusz istnieje"), thread_id, thread_type)
                     else:
-                        self.send(Message(text="It can't be only /"), thread_id, thread_type)
+                        self.send(Message(text="Nie możesz dać samego /"), thread_id, thread_type)
                 else:
-                    self.send(Message(text="Three or more words needed!"), thread_id, thread_type)
+                    self.send(Message(text="Trzy lub więcej słowa potrzebne potisie"), thread_id, thread_type)
 
-            if message_object.text.lower().startswith("/wiki"):
-                self.send(Message(text=wikikurwa(message_object.text[6:])), thread_id, thread_type)
+            elif msg.startswith("/wiki"):
+                self.send(Message(text=wiki_kobietalekkichobyczajow(message_object.text[6:])), thread_id, thread_type)
 
-            if message_object.text.startswith(tuple(mTable)):
+            elif msg.startswith(tuple(mTable)):
                 self.send(Message(text=sendShit(message_object.text)), thread_id, thread_type)
 
-            if message_object.text.lower() == "/plucietotalne" :
+            elif msg == "/plucietotalne":
                 self.sendLocalImage('plucie.gif', message=Message(text='Tfu!'),
-                                      thread_id=thread_id, thread_type=thread_type)
+                                    thread_id=thread_id, thread_type=thread_type)
 
-            elif message_object.text.lower() == "co":
+            elif msg == "/update":
+                goraca_aktualizacja(self, thread_id, thread_type)
+
+            elif msg.startswith("/git"):
+                self.send(Message(text=gitgud(msg[5:])), thread_id, thread_type)
+
+            elif msg == "/czymostjestotwarty":
+                self.send(Message(text=czymostjestotwarty()), thread_id, thread_type)
+
+            elif msg == "co":
                 self.send(Message(text='jajco kurwa'), thread_id, thread_type)
 
-            elif message_object.text.lower() == "nk":
+            elif msg == "nk":
                 self.send(Message(text='co, rąk ni mosz do roboty?'), thread_id, thread_type)
 
-            elif message_object.text.lower() == "arka gdynia":
+            elif msg == "arka gdynia":
                 self.send(Message(text='KURWA ŚWINIA'), thread_id, thread_type)
 
-            elif message_object.text.lower() == "zaglebie sosnowiec":
+            elif msg == u"zagłębie sosnowiec":
                 self.send(Message(text='KURWA BOMBOWIEC'), thread_id, thread_type)
 
-            elif message_object.text.lower() == "japierdole.png":
+            elif msg == "łódź bałuty":
+                self.sendRemoteImage('http://www33.patrz.pl/u/f/29/39/76/293976.jpg',
+                                     thread_id=thread_id, thread_type=thread_type)
+
+            elif msg == "japierdole.png":
                 self.sendRemoteImage('https://upload.wikimedia.org/wikipedia/commons/f/f3'
                                      '/Richard_Stallman_by_Anders_Brenna_01.jpg',
                                      message=Message(text='Stallman wlatuje'),
                                      thread_id=thread_id, thread_type=thread_type)
 
-            elif message_object.text.lower() == "/poilebananywlidlu":
+            elif msg == "/poilebananywlidlu":
                 self.send(Message(text='3,79 zł/kg'), thread_id, thread_type)
 
-            elif message_object.text.lower() == "/poilebuleczkiwbiedrze":
+            elif msg == "/poilebuleczkiwbiedrze":
                 self.send(Message(text=buleczki_lib.buleczki()), thread_id, thread_type)
 
-            elif message_object.text.lower() == "reload":
+            elif msg == "reload":
                 self.removeUserFromGroup(author_id, id_grupki)
                 self.addUsersToGroup(author_id, id_grupki)
 
-            elif message_object.text.lower() == "linux to szrot" or message_object.text == "GNU/Linux":
+            elif msg in love_react:
                 self.reactToMessage(message_id=message_object.uid, reaction=MessageReaction.LOVE)
 
-            elif message_object.text.lower() == u" ":
+            elif msg == " ":
                 self.send(Message(text='Gratuluje worka'), thread_id, thread_type)
 
-            elif message_object.text.lower() == "/help":
+            elif msg == "/help":
                 self.send(Message(text="Pomoc MabelBota 2.0\nBased on d3suu's MabelBot\nModified by Kajak2137"
-                                       "\nco\n/wikipedia\njapierdole.png\n/makeamdgreatagain"
-                                       "\nARKA GDYNIA\nZAGLEBIE SOSNOWIEC"
+                                       "\nco\n/wiki\njapierdole.png"
+                                       "\nARKA GDYNIA\nZAGŁĘBIE SOSNOWIEC"
                                        "\n/poilebananywlidlu\n/poilebuleczkiwbiedrze"
                                        "\nlinux to szrot\nKtóry POTIS najlepszy?"),
                           thread_id, thread_type)
 
-            elif "który potis najlepszy" in message_object.text.lower():
+            elif "który potis najlepszy" in msg:
                 self.send(Message(text='Ten za pobraniem'), thread_id, thread_type)
-            elif re.compile('|'.join(linux_names), re.IGNORECASE).search(message_object.text) and message_object.text != "linux to szrot" and "gnu" not in message_object.text.lower():
-                self.send(Message (text="I'd just like to interject for a moment. What you’re referring to as Linux, "
-                                        "is in fact, GNU/Linux, or as I’ve recently taken to calling it, "
-                                        "GNU plus Linux. Linux is not an operating system unto itself, but rather "
-                                        "another free component of a fully functioning GNU system made useful by the "
-                                        "GNU corelibs, shell utilities and vital system components comprising a full "
-                                        "OS as defined by POSIX. "
-                                        "Many computer users run a modified version of the GNU system every day, "
-                                        "without realizing it. Through a peculiar turn of events, the version of GNU "
-                                        "which is widely used today is often called “Linux”, and many of its users "
-                                        "are not aware that it is basically the GNU system, developed by the GNU "
-                                        "Project. There really is a Linux, and these people are using it, "
-                                        "but it is just a part of the system they use. "
-                                        "Linux is the kernel: the program in the system that allocates the machine’s "
-                                        "resources to the other programs that you run. The kernel is an essential "
-                                        "part of an operating system, but useless by itself; it can only function in "
-                                        "the context of a complete operating system. Linux is normally used in "
-                                        "combination with the GNU operating system: the whole system is basically GNU "
-                                        "with Linux added, or GNU/Linux. All the so-called “Linux” distributions are"
-                                        "really distributions of GNU/Linux"), thread_id, thread_type)
 
+            elif "kajak to debil" in msg:
+                self.send(Message(text="I'd just like to interject for a moment. What you’re referring to as Linux, "
+                                       "is in fact, GNU/Linux, or as I’ve recently taken to calling it, "
+                                       "GNU plus Linux. Linux is not an operating system unto itself, but rather "
+                                       "another free component of a fully functioning GNU system made useful by the "
+                                       "GNU corelibs, shell utilities and vital system components comprising a full "
+                                       "OS as defined by POSIX. "
+                                       "Many computer users run a modified version of the GNU system every day, "
+                                       "without realizing it. Through a peculiar turn of events, the version of GNU "
+                                       "which is widely used today is often called “Linux”, and many of its users "
+                                       "are not aware that it is basically the GNU system, developed by the GNU "
+                                       "Project. There really is a Linux, and these people are using it, "
+                                       "but it is just a part of the system they use. "
+                                       "Linux is the kernel: the program in the system that allocates the machine’s "
+                                       "resources to the other programs that you run. The kernel is an essential "
+                                       "part of an operating system, but useless by itself; it can only function in "
+                                       "the context of a complete operating system. Linux is normally used in "
+                                       "combination with the GNU operating system: the whole system is basically GNU "
+                                       "with Linux added, or GNU/Linux. All the so-called “Linux” distributions are"
+                                       "really distributions of GNU/Linux"), thread_id, thread_type)
+            elif msg == "/kurczak":
+                self.send(Message(text=lurczak()), thread_id, thread_type)
+
+            elif msg.startswith("/thiccify"):
+                self.send(Message(text=thiccify(message_object.text[10:])), thread_id, thread_type)
+
+            elif msg.startswith("/meme"):
+                memeStuff = MemeHandler(msg[6:])
+                self.sendRemoteImage(memeStuff[1], Message(text=memeStuff[0]), thread_id, thread_type)
         else:
             # Sends the data to the inherited onMessage, so that we can still see when a message is recieved
             super(MabelBot, self).onMessage(author_id=author_id, message_object=message_object,
                                             thread_id=id_grupki, thread_type=thread_type, **kwargs)
-        # koniec komend koniec komend koniec komend koniec komend koniec komend koniec komend koniec komend koniec komend koniec komend
+        # koniec komend koniec komend koniec komend koniec komend koniec komend koniec komend koniec komend koniec
 
     def on_people_added(self, user_ids):  # wywalka emilki
         if id_emilki in user_ids:
@@ -169,5 +212,6 @@ class MabelBot(Client):
             self.addUsersToGroup(id_emilki, id_grupki)
 
 
-bot = MabelBot(Potezny_login, Potezny_password)
+bot = MabelBot(Mabel_login, Mabel_password)
+bot.send(Message(text='Jestem!'), thread_id=id_grupki, thread_type=ThreadType.GROUP)
 bot.listen()
