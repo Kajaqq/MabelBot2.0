@@ -89,7 +89,7 @@ class MemeRequest:
         # If request available, then send it
         if canRequest:
             print("Request sent")
-            memeUtil.callCURLScripts()
+            memeUtil.getJsonFile()
             self.__parseMemes()
             self.prevReqTime.update(self.time_of_creation)
         # True => A request has been sent
