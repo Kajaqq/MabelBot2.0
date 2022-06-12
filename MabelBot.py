@@ -1,23 +1,19 @@
 # This Python file uses the following encoding: utf-8
-from fbchat import Client
-from fbchat.models import *
-import wikipedia
-
-import buleczki_lib
 import subprocess
 
-from MemeHandler import MemeHandler
-from thicc_lib import thiccify
-from d3s_lib import gitgud
-from most_lib import czymostjestotwarty
-from luszownictwo import lurczak
+import wikipedia
+from fbchat import Client
+from fbchat.models import *
 
+import buleczki_lib
+from d3s_lib import gitgud
 # presety
 from MabelPassy import MabelConfig
+from MemeHandler import MemeHandler
+from most_lib import czymostjestotwarty
+from thicc_lib import thiccify
 
-id_emilki = MabelConfig.idEmilki
-id_kajaka = MabelConfig.idKajaka
-id_grupki = MabelConfig.idGrupki
+id_grupki = MabelConfig.id_grupki
 banned_ids = MabelConfig.bannned_ids
 linux_names = ["linuch", "linux", "linuks"]
 love_react = ["linux to szrot", "linux ty kurwo jebana", "gnu/linux"]
@@ -34,16 +30,16 @@ def goraca_aktualizacja(message_object, thread_id, thread_type):
     exit()
 
 
-def wiki_kobietalekkichobyczajow(term):
+def wiki_search(term):
     if term == "AMD":
-        wyszukiwanie = wikipedia.search(u"Kał")
+        wyszukiwanie = wikipedia.search("Kał")
         return wikipedia.summary(wyszukiwanie[0], 1)
     else:
         try:
             wyszukiwanie = wikipedia.search(term)
             return wikipedia.summary(wyszukiwanie[0], 3)
         except Exception as e:
-            return "Błąd: %s" % e
+            return f"Błąd: {e}"
 
 
 def read_commands():
@@ -74,7 +70,7 @@ def sendShit(msg):
 class MabelBot(Client):
     def onMessage(self, author_id, message_object, thread_id, thread_type, **kwargs):
         self.markAsDelivered(thread_id, message_object.uid)
-        print("%s napisał: %s" % (author_id, message_object.text))  # output log
+        print(f"{author_id} napisał: {message_object.text}")  # output log
         if thread_type == ThreadType.GROUP and author_id not in banned_ids and author_id != self.uid and thread_id == id_grupki:
 
             msg = message_object.text.lower()
@@ -87,25 +83,21 @@ class MabelBot(Client):
                             f_content = ' '.join(msg[4:])
                             f_buffer = open("gownoposty.txt", "a")
                             f_buffer.write(f_content + '\n')
-                            self.send(Message(text="No elo dodałem: {:s}".format(msg[1])), thread_id, thread_type)
+                            self.send(Message(text="Dodałem: {:s}".format(msg[1])), thread_id, thread_type)
                             f_buffer.close()
                             read_commands()
                         else:
-                            self.send(Message(text="Komenda lusz istnieje"), thread_id, thread_type)
+                            self.send(Message(text="Komenda już istnieje"), thread_id, thread_type)
                     else:
                         self.send(Message(text="Nie możesz dać samego /"), thread_id, thread_type)
                 else:
-                    self.send(Message(text="Trzy lub więcej słowa potrzebne potisie"), thread_id, thread_type)
+                    self.send(Message(text="Trzy lub więcej słowa potrzebne"), thread_id, thread_type)
 
             elif msg.startswith("/wiki"):
-                self.send(Message(text=wiki_kobietalekkichobyczajow(message_object.text[6:])), thread_id, thread_type)
+                self.send(Message(text=wiki_search(message_object.text[6:])), thread_id, thread_type)
 
             elif msg.startswith(tuple(mTable)):
                 self.send(Message(text=sendShit(message_object.text)), thread_id, thread_type)
-
-            elif msg == "/plucietotalne":
-                self.sendLocalImage('plucie.gif', message=Message(text='Tfu!'),
-                                    thread_id=thread_id, thread_type=thread_type)
 
             elif msg == "/update":
                 goraca_aktualizacja(self, thread_id, thread_type)
@@ -125,7 +117,7 @@ class MabelBot(Client):
             elif msg == "arka gdynia":
                 self.send(Message(text='KURWA ŚWINIA'), thread_id, thread_type)
 
-            elif msg == u"zagłębie sosnowiec":
+            elif msg == "zagłębie sosnowiec":
                 self.send(Message(text='KURWA BOMBOWIEC'), thread_id, thread_type)
 
             elif msg == "łódź bałuty":
@@ -138,9 +130,6 @@ class MabelBot(Client):
                                      message=Message(text='Stallman wlatuje'),
                                      thread_id=thread_id, thread_type=thread_type)
 
-            elif msg == "/poilebananywlidlu":
-                self.send(Message(text='3,79 zł/kg'), thread_id, thread_type)
-
             elif msg == "/poilebuleczkiwbiedrze":
                 self.send(Message(text=buleczki_lib.buleczki()), thread_id, thread_type)
 
@@ -151,21 +140,15 @@ class MabelBot(Client):
             elif msg in love_react:
                 self.reactToMessage(message_id=message_object.uid, reaction=MessageReaction.LOVE)
 
-            elif msg == " ":
-                self.send(Message(text='Gratuluje worka'), thread_id, thread_type)
-
             elif msg == "/help":
-                self.send(Message(text="Pomoc MabelBota 2.0\nBased on d3suu's MabelBot\nModified by Kajak2137"
+                self.send(Message(text="Pomoc MabelBota 2.0\nBased on d3suu's MabelBot\nModified by Kajaqq"
                                        "\nco\n/wiki\njapierdole.png"
                                        "\nARKA GDYNIA\nZAGŁĘBIE SOSNOWIEC"
-                                       "\n/poilebananywlidlu\n/poilebuleczkiwbiedrze"
-                                       "\nlinux to szrot\nKtóry POTIS najlepszy?"),
+                                       "\n/poilebuleczkiwbiedrze"
+                                       "\nlinux to szrot\n/update\n/git\n/czymostjestotwarty"),
                           thread_id, thread_type)
 
-            elif "który potis najlepszy" in msg:
-                self.send(Message(text='Ten za pobraniem'), thread_id, thread_type)
-
-            elif "kajak to debil" in msg:
+            elif "linuxp" in msg:
                 self.send(Message(text="I'd just like to interject for a moment. What you’re referring to as Linux, "
                                        "is in fact, GNU/Linux, or as I’ve recently taken to calling it, "
                                        "GNU plus Linux. Linux is not an operating system unto itself, but rather "
@@ -185,8 +168,6 @@ class MabelBot(Client):
                                        "combination with the GNU operating system: the whole system is basically GNU "
                                        "with Linux added, or GNU/Linux. All the so-called “Linux” distributions are"
                                        "really distributions of GNU/Linux"), thread_id, thread_type)
-            elif msg == "/kurczak":
-                self.send(Message(text=lurczak()), thread_id, thread_type)
 
             elif msg.startswith("/thiccify"):
                 self.send(Message(text=thiccify(message_object.text[10:])), thread_id, thread_type)
@@ -199,18 +180,6 @@ class MabelBot(Client):
             super(MabelBot, self).onMessage(author_id=author_id, message_object=message_object,
                                             thread_id=id_grupki, thread_type=thread_type, **kwargs)
         # koniec komend koniec komend koniec komend koniec komend koniec komend koniec komend koniec komend koniec
-
-    def on_people_added(self, user_ids):  # wywalka emilki
-        if id_emilki in user_ids:
-            self.removeUserFromGroup(id_emilki, id_grupki)
-            self.send(Message(text='Threat neutralized'), thread_id=id_grupki, thread_type=ThreadType.GROUP)
-
-    def on_person_removed(self, user_id):  # anty wywalka kajaka
-        if id_kajaka in user_id:
-            self.addUsersToGroup(id_kajaka, id_grupki)
-        else:
-            self.addUsersToGroup(id_emilki, id_grupki)
-
 
 bot = MabelBot(Mabel_login, Mabel_password)
 bot.send(Message(text='Jestem!'), thread_id=id_grupki, thread_type=ThreadType.GROUP)

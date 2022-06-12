@@ -1,10 +1,8 @@
 class MabelConfig(object):
     bannned_ids = [""]
-    idEmilki = "100011357566074"
-    idKajaka = ["100002151786860"]
-    idGrupki = "2196023890435740"
-    login = login
-    password = password
+    id_grupki=''
+    login = "login"
+    password = "password"
 
 
 class MemeConfig(object):

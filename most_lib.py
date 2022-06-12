@@ -29,7 +29,7 @@ def czymostjestotwarty():
     elif date_now in zamkniete:
         return "Most otwarty tylko od kwietnia do października"
     else:
-        return "Coś sie popsuło"
+        return "Ups, coś poszło nie tak"
 
 
 def get_closest(myList, myNumber):

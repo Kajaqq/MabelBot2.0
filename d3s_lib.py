@@ -16,3 +16,4 @@ def gitgud(text_input):
     # print(gitgud_stars)
 
     return "Znalazlem to:\n" + gitgud_fulltitle + "\nOpis: " + gitgud_description + "\nGwiazdki: " + gitgud_stars + "\n\n" + gitgud_link
+    
