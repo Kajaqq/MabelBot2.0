@@ -1,6 +1,5 @@
 import MemeRequest
 
-
 def MemeHandler(type):
     mc = MemeRequest.MemeRequest()
     post = mc.giveMeme(type)

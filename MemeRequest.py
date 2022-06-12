@@ -1,13 +1,11 @@
-import subprocess
-import json
 import datetime
-import shutil
-import requests
+import json
 import random
-import RateLimit
-import PreviousRequestTime
-from MabelPassy import MemeConfig as Config
+
 import memeUtil
+import PreviousRequestTime
+import RateLimit
+from MabelPassy import MemeConfig as Config
 
 '''
     Black box diagram of this class
